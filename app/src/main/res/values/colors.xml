@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 基础色 -->
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- 品牌主色调 - 活力蓝 -->
+    <color name="primary_color">#FF4A90D9</color>
+    <color name="primary_dark">#FF2E7ACC</color>
+    <color name="primary_light">#FFE8F0FE</color>
+
+    <!-- 强调色 - 清新青蓝 -->
+    <color name="accent_color">#FF26A69A</color>
+    <color name="accent_dark">#FF1E8A7E</color>
+
+    <!-- 文本色 -->
+    <color name="text_primary">#FF1A1A2E</color>
+    <color name="text_secondary">#FF5C5C72</color>
+    <color name="hint_text">#FF9A9AB0</color>
+
+    <!-- 功能色 -->
+    <color name="error_color">#FF4757</color>
+    <color name="success_color">#FF2ED573</color>
+    <color name="warning_color">#FFA502</color>
+
+    <!-- 背景色 - 淡蓝色系 -->
+    <color name="bg_page">#FFF0F6FF</color>
+    <color name="bg_card">#FFFFFFFF</color>
+    <color name="divider_color">#FFE8EEF5</color>
+
+    <!-- 导航栏 - 深蓝色 -->
+    <color name="nav_bg">#FF1B3A5C</color>
+    <color name="nav_item_selected">#FFFFFFFF</color>
+    <color name="nav_item_unselected">#FF8BA4C7</color>
+
+    <!-- 灰色系 -->
+    <color name="gray_100">#FFF8F9FA</color>
+    <color name="gray_200">#FFE9ECEF</color>
+    <color name="gray_300">#FFDEE2E6</color>
+</resources>

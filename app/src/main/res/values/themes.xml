@@ -1,0 +1,21 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.BlindWeekend" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color - 蓝色系 -->
+        <item name="colorPrimary">@color/primary_color</item>
+        <item name="colorPrimaryDark">@color/nav_bg</item>
+        <item name="colorAccent">@color/accent_color</item>
+        <!-- Status bar -->
+        <item name="android:statusBarColor">@color/nav_bg</item>
+        <!-- Navigation bar -->
+        <item name="android:navigationBarColor">@color/nav_bg</item>
+    </style>
+
+    <style name="Theme.BlindWeekend" parent="Base.Theme.BlindWeekend" />
+
+    <!-- AppBar overlay theme - 深蓝底白字 -->
+    <style name="Theme.BlindWeekend.AppBarOverlay" parent="ThemeOverlay.Material3.ActionBar">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:background">@color/nav_bg</item>
+    </style>
+</resources>

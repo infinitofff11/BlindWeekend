@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_page"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- 顶部区域：标题 + 状态 -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="0dp"
+            app:cardElevation="0dp"
+            android:backgroundTint="@color/primary_color">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <!-- 返回 + 标题 -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/btn_back"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:src="@drawable/ic_arrow_back"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="6dp"
+                        android:contentDescription="返回" />
+
+                    <TextView
+                        android:id="@+id/tv_status_badge"
+                        android:layout_width="wrap_content"
+                        android:layout_height="24dp"
+                        android:text="招募中"
+                        android:textSize="11sp"
+                        android:textColor="@android:color/white"
+                        android:gravity="center"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp"
+                        android:background="@drawable/bg_tag_primary"
+                        android:layout_marginStart="10dp" />
+
+                </LinearLayout>
+
+                <!-- 盲盒标题 -->
+                <TextView
+                    android:id="@+id/tv_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="周末文艺探店+公园散步"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:textColor="@android:color/white"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    android:layout_marginTop="14dp" />
+
+                <!-- 心情文案 -->
+                <TextView
+                    android:id="@+id/tv_mood_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="想找个搭子一起逛书店然后去公园发呆～"
+                    android:textSize="15sp"
+                    android:textColor="#E0FFFFFF"
+                    android:maxLines="3"
+                    android:ellipsize="end"
+                    android:lineSpacingMultiplier="1.2"
+                    android:layout_marginTop="8dp" />
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- 信息卡片区域 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- 基本信息 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📍 活动信息"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <GridLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="2"
+                        android:layout_marginTop="12dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:layout_height="wrap_content"
+                            android:text="大致区域"
+                            android:textSize="12sp"
+                            android:textColor="@color/hint_text" />
+                        <TextView
+                            android:id="@+id/tv_district"
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:layout_height="wrap_content"
+                            android:text="朝阳区"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:gravity="end" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:layout_height="wrap_content"
+                            android:text="活动日期"
+                            android:textSize="12sp"
+                            android:textColor="@color/hint_text"
+                            android:layout_marginTop="10dp" />
+                        <TextView
+                            android:id="@+id/tv_activity_date"
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:layout_height="wrap_content"
+                            android:text="2026-05-17"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:gravity="end"
+                            android:layout_marginTop="10dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:layout_height="wrap_content"
+                            android:text="时间段"
+                            android:textSize="12sp"
+                            android:textColor="@color/hint_text"
+                            android:layout_marginTop="10dp" />
+                        <TextView
+                            android:id="@+id/tv_time_period"
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:layout_height="wrap_content"
+                            android:text="周六下午"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary"
+                            android:gravity="end"
+                            android:layout_marginTop="10dp" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:layout_height="wrap_content"
+                            android:text="需要人数"
+                            android:textSize="12sp"
+                            android:textColor="@color/hint_text"
+                            android:layout_marginTop="10dp" />
+                        <TextView
+                            android:id="@+id/tv_count_info"
+                            android:layout_width="0dp"
+                            android:layout_columnWeight="1"
+                            android:layout_height="wrap_content"
+                            android:text="已招募 1/3 人"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/accent_color"
+                            android:gravity="end"
+                            android:layout_marginTop="10dp" />
+
+                    </GridLayout>
+
+                    <!-- 类型标签 -->
+                    <LinearLayout
+                        android:id="@+id/layout_tags"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="14dp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 描述（如果有） -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/card_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                android:visibility="gone"
+                android:layout_marginBottom="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📝 活动说明"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_primary" />
+
+                    <TextView
+                        android:id="@+id/tv_summary_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text=""
+                        android:textSize="14sp"
+                        android:textColor="#666666"
+                        android:lineSpacingMultiplier="1.4"
+                        android:layout_marginTop="8dp" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 发布者信息 -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                android:layout_marginBottom="80dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="16dp">
+
+                    <View
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/circle_gray" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="12dp">
+
+                        <TextView
+                            android:id="@+id/tv_publisher_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="匿名用户"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/text_primary" />
+
+                        <TextView
+                            android:id="@+id/tv_publish_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="刚刚发布"
+                            android:textSize="11sp"
+                            android:textColor="@color/hint_text"
+                            android:layout_marginTop="2dp" />
+
+                    </LinearLayout>
+
+                    <!-- 参与按钮 -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_join_action"
+                        style="@style/Widget.Material3.Button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="42dp"
+                        android:text="💝 想组队"
+                        android:textSize="14sp"
+                        android:minWidth="100dp"
+                        app:cornerRadius="21dp"
+                        android:textColor="@android:color/white"
+                        app:backgroundTint="@color/accent_color" />
+
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>

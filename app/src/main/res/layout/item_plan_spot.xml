@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/divider_color"
+    android:layout_marginBottom="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="14dp">
+
+        <!-- 左侧：时间信息 -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:paddingEnd="12dp">
+
+            <TextView
+                android:id="@+id/tv_item_start_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10:30"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/primary_color" />
+
+            <TextView
+                android:id="@+id/tv_item_end_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="12:00"
+                android:textSize="11sp"
+                android:textColor="@color/text_secondary" />
+
+            <!-- 时间轴节点 -->
+            <View
+                android:id="@+id/view_timeline_node"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:background="@drawable/circle_primary"
+                android:layout_marginTop="4dp" />
+
+            <View
+                android:id="@+id/view_timeline_line"
+                android:layout_width="2dp"
+                android:layout_height="0dp"
+                android:background="@color/primary_light"
+                android:layout_marginTop="4dp" />
+        </LinearLayout>
+
+        <!-- 右侧：活动点详情 -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- 地点名 + 换一批按钮 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/tv_spot_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="单向空间书店"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:maxLines="1"
+                    android:ellipsize="end" />
+
+                <TextView
+                    android:id="@+id/btn_replace"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="换一批"
+                    android:textSize="12sp"
+                    android:textColor="@color/primary_color"
+                    android:padding="4dp"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true" />
+            </LinearLayout>
+
+            <!-- 类型标签 + 消费信息 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="6dp">
+
+                <!-- 类型标签 - 用TextView替代Chip -->
+                <TextView
+                    android:id="@+id/chip_type_tag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="24dp"
+                    android:text="文艺"
+                    android:textSize="11sp"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:background="@drawable/bg_tag_chip" />
+
+                <!-- 人均消费 -->
+                <TextView
+                    android:id="@+id/tv_consume"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="人均 60元"
+                    android:textSize="12sp"
+                    android:textColor="@color/text_secondary"
+                    android:layout_marginStart="8dp"
+                    android:layout_gravity="center_vertical" />
+            </LinearLayout>
+
+            <!-- 地址 -->
+            <TextView
+                android:id="@+id/tv_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="朝阳区·望京街道"
+                android:textSize="12sp"
+                android:textColor="@color/text_secondary"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:layout_marginTop="4dp" />
+
+            <!-- 建议停留时长 -->
+            <TextView
+                android:id="@+id/tv_duration_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="建议停留 90 分钟"
+                android:textSize="11sp"
+                android:textColor="@color/hint_text"
+                android:layout_marginTop="4dp"
+                android:background="@drawable/bg_duration_hint"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp" />
+        </LinearLayout>
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>

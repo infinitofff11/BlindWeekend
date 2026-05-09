@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="首页" />
+
+    <item
+        android:id="@+id/navigation_blindbox"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="盲盒广场" />
+
+    <item
+        android:id="@+id/navigation_plans"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="我的方案" />
+
+    <item
+        android:id="@+id/navigation_profile"
+        android:icon="@drawable/ic_launcher_foreground"
+        android:title="我的" />
+
+</menu>
