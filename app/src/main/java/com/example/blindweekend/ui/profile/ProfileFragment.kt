@@ -552,12 +552,8 @@ class ProfileFragment : Fragment() {
     private fun showAboutDialog() {
         val msg = "版本：v1.0.0\n\n" +
             "不期周末 \u2014 让每个周末都不期而遇的精彩。\n\n" +
-            "基于你的兴趣偏好，AI智能生成专属周末出行方案，\n" +
-            "还能发布为盲盒，找到志同道合的伙伴一起出发！\n\n" +
-            "技术栈：\n" +
-            "\u00b7 Android (Kotlin + Jetpack MVVM)\n" +
-            "\u00b7 Spring Boot 后端\n" +
-            "\u00b7 MySQL 数据库"
+            "基于你的兴趣偏好，生成专属周末出行方案，\n" +
+            "还能发布为盲盒，找到志同道合的伙伴一起出发！\n\n"
 
         AlertDialog.Builder(requireContext())
             .setTitle("关于不期周末")

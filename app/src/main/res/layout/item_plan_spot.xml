@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="12dp"
@@ -87,13 +88,14 @@
                     android:id="@+id/btn_replace"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="换一批"
-                    android:textSize="12sp"
-                    android:textColor="@color/primary_color"
-                    android:padding="4dp"
-                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackground"
+                    android:padding="4dp"
+                    android:text="换一批"
+                    android:textColor="@color/primary_color"
+                    android:textSize="12sp"
+                    tools:ignore="TouchTargetSizeCheck" />
             </LinearLayout>
 
             <!-- 类型标签 + 消费信息 -->
