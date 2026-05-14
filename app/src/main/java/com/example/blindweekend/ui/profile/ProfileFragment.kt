@@ -176,11 +176,12 @@ class ProfileFragment : Fragment() {
                 // 盲盒参与数：优先从 API 获取，未登录或失败时为 0
                 var blindboxCount = 0
                 if (AuthManager.isLoggedIn) {
-                    try {
-                        val api = com.example.blindweekend.network.RetrofitClient.api
-                        val userId = AuthManager.currentUserId
-                        val statsResponse = api.getUserBlindBoxStats(userId)
-                        if (statsResponse.isSuccessful && statsResponse.body()?.code == 200) {
+                    val api = com.example.blindweekend.network.RetrofitClient.api
+                    val userId = AuthManager.currentUserId
+                    if (userId > 0L) {  // 有效userId才请求统计接口
+                        try {
+                            val statsResponse = api.getUserBlindBoxStats(userId)
+                            if (statsResponse.isSuccessful && statsResponse.body()?.code == 200) {
                             val statsData = statsResponse.body()?.data
                             @Suppress("UNCHECKED_CAST")
                             val statsMap = statsData as? Map<String, Any>
@@ -189,11 +190,16 @@ class ProfileFragment : Fragment() {
                                 val participated = (statsMap["participatedCount"] as? Number)?.toInt() ?: 0
                                 val published = (statsMap["publishedCount"] as? Number)?.toInt() ?: 0
                                 blindboxCount = participated + published
+                                android.util.Log.d("ProfileFragment", "盲盒统计: participated=$participated, published=$published")
                             }
+                        } else {
+                            android.util.Log.w("ProfileFragment", "盲盒统计请求失败: code=${statsResponse.code()}, body=${statsResponse.body()}")
                         }
-                    } catch (_: Exception) {
+                    } catch (e: Exception) {
+                        android.util.Log.w("ProfileFragment", "盲盒统计API调用异常", e)
                         // API 调用失败时保持默认值 0
                     }
+                    }  // end if (userId > 0L)
                 }
 
                 requireActivity().runOnUiThread {
@@ -572,6 +578,14 @@ class ProfileFragment : Fragment() {
         val userId = AuthManager.currentUserId
         val context = requireContext()
 
+        // 用户ID有效性校验
+        if (userId <= 0L) {
+            Toast.makeText(context, "用户信息异常，请重新登录", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        android.util.Log.d("ProfileFragment", "加载盲盒列表: isParticipated=$isParticipated, userId=$userId")
+
         // 先显示一个加载中的对话框
         val loadingDialog = AlertDialog.Builder(context)
             .setTitle(title)
@@ -582,23 +596,29 @@ class ProfileFragment : Fragment() {
         lifecycleScope.launch {
             try {
                 val api = com.example.blindweekend.network.RetrofitClient.api
-                val boxes = if (isParticipated) {
+                val boxes: List<com.example.blindweekend.data.model.BlindBox> = if (isParticipated) {
                     val response = api.getParticipatedBlindBoxes(userId)
+                    android.util.Log.d("ProfileFragment", "参与的盲盒响应: http=${response.isSuccessful}, code=${response.body()?.code}")
                     if (response.isSuccessful && response.body()?.code == 200) {
                         response.body()?.data ?: emptyList()
                     } else {
-                        emptyList()
+                        android.util.Log.w("ProfileFragment", "参与的盲盒请求失败: httpCode=${response.code()}, body=${response.body()}")
+                        null  // 用null标记请求失败，区分"真的没数据"
                     }
                 } else {
                     val response = api.getPublishedBlindBoxes(userId)
+                    android.util.Log.d("ProfileFragment", "发布的盲盒响应: http=${response.isSuccessful}, code=${response.body()?.code}")
                     if (response.isSuccessful && response.body()?.code == 200) {
                         response.body()?.data ?: emptyList()
                     } else {
-                        emptyList()
+                        android.util.Log.w("ProfileFragment", "发布的盲盒请求失败: httpCode=${response.code()}, body=${response.body()}")
+                        null
                     }
-                }
+                } ?: emptyList()  // null（请求失败）时返回空列表
 
                 loadingDialog.dismiss()
+
+                android.util.Log.d("ProfileFragment", "盲盒列表加载完成: size=${boxes.size}")
 
                 requireActivity().runOnUiThread {
                     // 深色背景容器
@@ -681,6 +701,7 @@ class ProfileFragment : Fragment() {
                     }
                 }
             } catch (e: Exception) {
+                android.util.Log.e("ProfileFragment", "盲盒列表加载异常", e)
                 loadingDialog.dismiss()
                 requireActivity().runOnUiThread {
                     Toast.makeText(context, "加载失败：${e.message}", Toast.LENGTH_SHORT).show()

@@ -8,6 +8,7 @@
     app:cardElevation="2dp"
     app:strokeWidth="1dp"
     app:strokeColor="@color/bg_page"
+    app:cardBackgroundColor="@color/gray_100"
     android:layout_marginBottom="12dp"
     android:foreground="?attr/selectableItemBackground"
     android:clickable="true"

@@ -1,5 +1,6 @@
 package com.example.blindweekend.ui.blindbox
 
+import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -68,6 +69,22 @@ class PublishBlindBoxDialog(
 
         // 默认需要2人
         etRequiredCount.setText("2")
+
+        // 日期选择器：点击弹出 DatePickerDialog，自动格式化为 yyyy-MM-dd
+        val calendar = java.util.Calendar.getInstance()
+        etDate.isFocusable = false
+        etDate.isFocusableInTouchMode = false
+        etDate.setOnClickListener {
+            DatePickerDialog(
+                context,
+                { _, year, month, dayOfMonth ->
+                    etDate.setText("%04d-%02d-%02d".format(year, month + 1, dayOfMonth))
+                },
+                calendar.get(java.util.Calendar.YEAR),
+                calendar.get(java.util.Calendar.MONTH),
+                calendar.get(java.util.Calendar.DAY_OF_MONTH)
+            ).show()
+        }
 
         // 发布按钮点击
         btnPublish.setOnClickListener {
