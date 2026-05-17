@@ -3,11 +3,13 @@ package com.example.blindweekend.ui.blindbox
 import android.app.DatePickerDialog
 import android.os.Bundle
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.example.blindweekend.R
 import com.example.blindweekend.auth.AuthManager
 import com.example.blindweekend.data.model.BlindBoxCreateRequest
 import com.example.blindweekend.data.model.GeneratedPlan
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
@@ -32,6 +34,10 @@ class PublishBlindBoxDialog(
     private val onPublished: () -> Unit = {}
 ) : BottomSheetDialog(context) {
 
+    // 支持的城市列表
+    private val supportedCities = listOf("北京", "惠州")
+    private var selectedCity: String = "北京"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.dialog_publish_blindbox)
@@ -44,9 +50,18 @@ class PublishBlindBoxDialog(
         val etTimePeriod = findViewById<TextInputEditText>(R.id.et_time_period)!!
         val etRequiredCount = findViewById<TextInputEditText>(R.id.et_required_count)!!
         val tilCount = findViewById<TextInputLayout>(R.id.til_required_count)!!
+        val actvCity = findViewById<MaterialAutoCompleteTextView>(R.id.actv_city)!!
+        val tilCity = findViewById<TextInputLayout>(R.id.til_city)!!
         val etDistrict = findViewById<TextInputEditText>(R.id.et_district)!!
         val etTags = findViewById<TextInputEditText>(R.id.et_tags)!!
         val btnPublish = findViewById<MaterialButton>(R.id.btn_publish)!!
+
+        // 初始化城市选择器
+        val cityAdapter = ArrayAdapter(context, android.R.layout.simple_dropdown_item_1line, supportedCities)
+        actvCity.setAdapter(cityAdapter)
+        actvCity.setOnItemClickListener { _, _, position, _ ->
+            selectedCity = supportedCities[position]
+        }
 
         // 预填充：有方案数据时自动填入（从方案页发布）
         plan?.let { p ->
@@ -61,10 +76,21 @@ class PublishBlindBoxDialog(
                 etTags.setText(allTags.joinToString(","))
             }
 
+            // 提取城市（取第一个地点的城市）
+            p.items.firstOrNull()?.spot?.city?.let { city ->
+                selectedCity = city
+                actvCity.setText(city, false)
+            }
+
             // 提取区域（取第一个地点的区域）
             p.items.firstOrNull()?.spot?.district?.let { district ->
                 etDistrict.setText(district)
             }
+        }
+
+        // 如果没有方案数据，设置默认城市
+        if (plan == null) {
+            actvCity.setText(selectedCity, false)
         }
 
         // 默认需要2人
@@ -97,6 +123,16 @@ class PublishBlindBoxDialog(
                 tilTitle.error = null
             }
 
+            // 验证城市
+            val cityText = actvCity.text?.toString()?.trim() ?: ""
+            if (cityText.isBlank()) {
+                tilCity.error = "请选择城市"
+                valid = false
+            } else {
+                selectedCity = cityText
+                tilCity.error = null
+            }
+
             if (etRequiredCount.text.isNullOrBlank() || (etRequiredCount.text.toString().toIntOrNull() ?: 0) < 1) {
                 tilCount.error = "请输入有效人数"
                 valid = false
@@ -111,6 +147,7 @@ class PublishBlindBoxDialog(
                 publisherId = AuthManager.currentUser?.id ?: 1,
                 title = etTitle.text.toString().trim(),
                 requiredCount = etRequiredCount.text.toString().toInt(),
+                city = selectedCity,
                 moodText = etMood.text?.toString()?.trim()?.takeIf { it.isNotEmpty() },
                 activityDate = etDate.text?.toString()?.trim()?.takeIf { it.isNotEmpty() },
                 activityTimePeriod = etTimePeriod.text?.toString()?.trim()?.takeIf { it.isNotEmpty() },

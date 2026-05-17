@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -16,6 +17,7 @@ import com.example.blindweekend.data.db.CachedPlanEntity
 import com.example.blindweekend.data.model.GeneratedPlan
 import com.example.blindweekend.data.model.GeneratedPlanItem
 import com.example.blindweekend.ui.blindbox.PublishBlindBoxDialog
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import kotlinx.coroutines.launch
@@ -34,7 +36,10 @@ class PlanGeneratorFragment : Fragment() {
     private lateinit var viewModel: PlanGeneratorViewModel
     private lateinit var layoutPlanItems: LinearLayout
 
-    // 默认配置（实际应从用户偏好中读取）
+    // 支持的城市列表
+    private val supportedCities = listOf("北京", "惠州")
+
+    // 默认配置
     private var currentCity = "北京"
     private var currentConsumeLevel = "low"
     private var currentThemeTypes: List<String>? = null
@@ -52,6 +57,19 @@ class PlanGeneratorFragment : Fragment() {
 
         // 初始化ViewModel
         viewModel = PlanGeneratorViewModel()
+
+        // 初始化城市选择器
+        val actvCity = view.findViewById<MaterialAutoCompleteTextView>(R.id.actv_city)
+        val cityAdapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, supportedCities)
+        actvCity.setAdapter(cityAdapter)
+        actvCity.setText(currentCity, false)
+        // 点击时临时清空文本以展示完整城市列表（否则会被当前文本过滤）
+        actvCity.setOnClickListener {
+            actvCity.setText("", false)
+        }
+        actvCity.setOnItemClickListener { _, _, position, _ ->
+            currentCity = supportedCities[position]
+        }
 
         // 绑定视图
         val btnGenerate: MaterialCardView = view.findViewById(R.id.btn_generate_plan)
@@ -78,10 +96,18 @@ class PlanGeneratorFragment : Fragment() {
         // 观察错误信息
         viewModel.errorMessage.observe(viewLifecycleOwner) { msg ->
             if (msg != null) {
-                tvError.text = msg
+                // 如果是城市无数据相关错误，显示更友好的提示
+                val displayMsg = when {
+                    msg.contains("暂无可用活动点") || msg.contains("当前城市暂无") ->
+                        "🏙️ 暂不支持「$currentCity」地区，我们正在努力拓展中！"
+                    msg.contains("暂无可用方案模板") ->
+                        "🏙️ 暂不支持「$currentCity」地区，我们正在努力拓展中！"
+                    else -> msg
+                }
+                tvError.text = displayMsg
                 tvError.visibility = View.VISIBLE
                 tvError.setOnClickListener { viewModel.clearError() }
-                Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), displayMsg, Toast.LENGTH_SHORT).show()
             } else {
                 tvError.visibility = View.GONE
             }

@@ -13,6 +13,7 @@ data class BlindBoxCreateRequest(
     @SerializedName("summary_text") val summaryText: String? = null,
     @SerializedName("mood_text") val moodText: String? = null,
     @SerializedName("district") val district: String? = null,
+    @SerializedName("city") val city: String? = null,
     @SerializedName("activity_date") val activityDate: String? = null,
     @SerializedName("activity_time_period") val activityTimePeriod: String? = null,
     @SerializedName("activity_type_tags") val activityTypeTags: String? = null

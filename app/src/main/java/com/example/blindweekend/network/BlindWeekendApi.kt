@@ -55,7 +55,9 @@ interface BlindWeekendApi {
     suspend fun getBlindBoxList(
         @Query("pageNum") pageNum: Int = 1,
         @Query("pageSize") pageSize: Int = 20,
-        @Query("status") status: String = "open"
+        @Query("status") status: String = "open",
+        @Query("city") city: String? = null,
+        @Query("tags") tags: String? = null
     ): Response<ApiResponse<PageResponse<BlindBox>>>
 
     /**

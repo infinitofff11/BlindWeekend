@@ -16,6 +16,7 @@ data class BlindBox(
     @SerializedName("summary_text") val summaryText: String?,
     @SerializedName("mood_text") val moodText: String?,
     val district: String?,
+    val city: String?,
     @SerializedName("activity_date") val activityDate: String?,
     @SerializedName("activity_time_period") val activityTimePeriod: String?,
     @SerializedName("required_count") val requiredCount: Int,

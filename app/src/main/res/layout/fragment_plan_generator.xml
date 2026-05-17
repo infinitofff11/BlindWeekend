@@ -16,6 +16,24 @@
         android:padding="16dp"
         android:paddingBottom="80dp">
 
+        <!-- 城市选择器 -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_city"
+            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="选择城市"
+            android:layout_marginBottom="16dp">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/actv_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:textSize="15sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
         <!-- 顶部标语 -->
         <TextView
             android:id="@+id/tv_slogan"

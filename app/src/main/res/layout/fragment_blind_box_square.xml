@@ -49,8 +49,9 @@
                     app:cornerRadius="16dp"
                     tools:ignore="TouchTargetSizeCheck" />
 
-                <!-- 筛选按钮（可扩展） -->
+                <!-- 筛选按钮 -->
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_filter"
                     style="@style/Widget.Material3.Button.TextButton"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"

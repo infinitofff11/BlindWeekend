@@ -127,7 +127,12 @@ class BlindBoxDetailFragment : Fragment() {
         }
 
         // 基本信息
-        view.findViewById<TextView>(R.id.tv_district).text = box.district ?: "未指定"
+        val locationText = buildString {
+            if (!box.city.isNullOrBlank()) append(box.city)
+            if (!box.city.isNullOrBlank() && !box.district.isNullOrBlank()) append("·")
+            if (!box.district.isNullOrBlank()) append(box.district)
+        }.ifEmpty { "未指定" }
+        view.findViewById<TextView>(R.id.tv_district).text = locationText
         view.findViewById<TextView>(R.id.tv_activity_date).text =
             box.activityDate ?: "待定"
         view.findViewById<TextView>(R.id.tv_time_period).text =

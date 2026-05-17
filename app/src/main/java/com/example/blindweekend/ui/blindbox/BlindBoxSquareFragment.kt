@@ -94,6 +94,29 @@ class BlindBoxSquareFragment : Fragment() {
         // 首次加载数据
         viewModel.refreshBlindBoxes()
 
+        // 筛选按钮
+        binding.root.findViewById<View>(R.id.btn_filter).setOnClickListener {
+            val filterDialog = FilterBottomSheet(
+                context = requireContext(),
+                currentCity = viewModel.getFilterCity(),
+                currentTags = viewModel.getFilterTags(),
+                onFilterApplied = { city, tags ->
+                    if (city == null && tags.isEmpty()) {
+                        viewModel.clearFilter()
+                    } else {
+                        viewModel.setFilter(city, tags)
+                    }
+                }
+            )
+            filterDialog.show()
+        }
+
+        // 观察筛选描述，更新筛选按钮文字
+        viewModel.filterDescription.observe(viewLifecycleOwner) { desc ->
+            val btnFilter = binding.root.findViewById<com.google.android.material.button.MaterialButton>(R.id.btn_filter)
+            btnFilter?.text = if (desc.isNotEmpty()) "筛选: $desc ▼" else "筛选 ▼"
+        }
+
         // 顶部标题栏 - 发布盲盒按钮（直接弹出发布表单）
         binding.root.findViewById<View>(R.id.btn_publish_header).setOnClickListener {
             if (AuthManager.currentUser == null) {
@@ -185,7 +208,7 @@ class BlindBoxSquareFragment : Fragment() {
                     findViewById<TextView>(R.id.tv_mood_text).text =
                         blindBox.moodText ?: ""
                     findViewById<TextView>(R.id.tv_district).text =
-                        "📍 ${blindBox.district ?: "未知区域"}"
+                        "📍 ${blindBox.city ?: ""}${if (!blindBox.city.isNullOrBlank() && !blindBox.district.isNullOrBlank()) "·" else ""}${blindBox.district ?: ""}"
                     findViewById<TextView>(R.id.tv_time_info).text =
                         "🕐 ${blindBox.activityTimePeriod ?: ""}"
 
