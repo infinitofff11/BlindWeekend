@@ -15,6 +15,14 @@ data class User(
 )
 
 /**
+ * 登录/注册响应 — 包含 JWT Token 和用户信息
+ */
+data class LoginResponse(
+    val token: String,
+    val user: User
+)
+
+/**
  * 用户偏好
  */
 data class UserPreference(

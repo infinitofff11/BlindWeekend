@@ -1,6 +1,7 @@
 package com.example.blindweekend.network
 
 import com.example.blindweekend.data.model.*
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -84,16 +85,16 @@ interface BlindWeekendApi {
     // ==================== 用户相关 ====================
 
     /**
-     * 登录/注册（手机号+验证码）
+     * 登录（手机号+密码）→ 返回 JWT Token + 用户信息
      */
     @POST("auth/login")
-    suspend fun login(@Body loginReq: Map<String, String>): Response<ApiResponse<User>>
+    suspend fun login(@Body loginReq: Map<String, String>): Response<ApiResponse<LoginResponse>>
 
     /**
-     * 用户注册（手机号+昵称+密码）
+     * 用户注册（手机号+昵称+密码）→ 返回 JWT Token + 用户信息
      */
     @POST("auth/register")
-    suspend fun register(@Body registerReq: Map<String, String>): Response<ApiResponse<User>>
+    suspend fun register(@Body registerReq: Map<String, String>): Response<ApiResponse<LoginResponse>>
 
     /**
      * 获取用户信息
@@ -120,4 +121,19 @@ interface BlindWeekendApi {
      */
     @GET("admin/blindboxes/user/{userId}/stats")
     suspend fun getUserBlindBoxStats(@Path("userId") userId: Long): Response<ApiResponse<Map<String, Any>>>
+
+    // ==================== 用户资料相关 ====================
+
+    /**
+     * 更新用户资料（昵称/城市）
+     */
+    @PUT("auth/profile")
+    suspend fun updateProfile(@Body body: Map<String, @JvmSuppressWildcards String>): Response<ApiResponse<User>>
+
+    /**
+     * 上传头像
+     */
+    @Multipart
+    @POST("auth/profile/avatar")
+    suspend fun uploadAvatar(@Part avatar: MultipartBody.Part): Response<ApiResponse<User>>
 }

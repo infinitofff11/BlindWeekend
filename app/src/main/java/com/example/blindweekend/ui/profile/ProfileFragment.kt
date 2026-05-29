@@ -7,6 +7,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -14,6 +15,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import coil.ImageLoader
+import coil.request.ImageRequest
 import com.example.blindweekend.R
 import com.example.blindweekend.BlindWeekendApplication
 import com.example.blindweekend.auth.AuthManager
@@ -42,6 +45,7 @@ class ProfileFragment : Fragment() {
     private lateinit var tvFavoriteCount: TextView
     private lateinit var tvCacheSize: TextView
     private lateinit var btnLogout: View
+    private lateinit var ivAvatar: ImageView
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -62,6 +66,7 @@ class ProfileFragment : Fragment() {
         tvFavoriteCount = view.findViewById(R.id.tv_favorite_count)
         tvCacheSize = view.findViewById(R.id.tv_cache_size)
         btnLogout = view.findViewById(R.id.btn_logout)
+        ivAvatar = view.findViewById(R.id.iv_avatar)
 
         // 点击头像区域 → 登录/查看个人信息
         view.findViewById<View>(R.id.iv_avatar).setOnClickListener {
@@ -94,7 +99,16 @@ class ProfileFragment : Fragment() {
 
         // 设置按钮入口（右上角齿轮图标）
         view.findViewById<View>(R.id.btn_settings).setOnClickListener {
-            Toast.makeText(requireContext(), "设置功能开发中~", Toast.LENGTH_SHORT).show()
+            if (AuthManager.isLoggedIn) {
+                val sheet = SettingsBottomSheet()
+                sheet.onSettingsUpdated = {
+                    refreshUserUI()
+                    loadStats()
+                }
+                sheet.show(childFragmentManager, "settings")
+            } else {
+                Toast.makeText(requireContext(), "请先登录", Toast.LENGTH_SHORT).show()
+            }
         }
 
         // 我参与的盲盒
@@ -128,10 +142,44 @@ class ProfileFragment : Fragment() {
             val maskedPhone = user?.phone?.let { maskPhone(it) } ?: ""
             tvUserDesc.text = if (maskedPhone.isNotEmpty()) "已登录 · $maskedPhone" else "已登录"
             btnLogout.visibility = View.VISIBLE
+
+            // 加载头像
+            val avatarUrl = user?.avatarUrl
+            if (!avatarUrl.isNullOrEmpty()) {
+                loadAvatarImage(avatarUrl)
+            } else {
+                ivAvatar.setImageResource(R.drawable.ic_person)
+            }
         } else {
             tvNickname.text = "点击登录"
             tvUserDesc.text = "发现更多精彩内容"
             btnLogout.visibility = View.GONE
+            ivAvatar.setImageResource(R.drawable.ic_person)
+        }
+    }
+
+    /**
+     * 加载头像图片（使用 Coil 图片加载库，配合 ImageView clipToOutline 实现圆形裁剪）
+     */
+    private fun loadAvatarImage(url: String) {
+        try {
+            val request = ImageRequest.Builder(requireContext())
+                .data(url)
+                .crossfade(true)
+                .placeholder(R.drawable.ic_person)
+                .error(R.drawable.ic_person)
+                .target(
+                    onSuccess = { drawable ->
+                        ivAvatar.setImageDrawable(drawable)
+                    },
+                    onError = {
+                        ivAvatar.setImageResource(R.drawable.ic_person)
+                    }
+                )
+                .build()
+            ImageLoader(requireContext()).enqueue(request)
+        } catch (e: Exception) {
+            android.util.Log.w("ProfileFragment", "头像加载失败: $url", e)
         }
     }
 
@@ -222,6 +270,7 @@ class ProfileFragment : Fragment() {
 
     /**
      * 显示用户详细信息对话框（已登录时）
+     * 注意：昵称修改已迁移到设置 BottomSheet
      */
     private fun showUserInfoDialog() {
         val user = AuthManager.currentUser ?: return
@@ -234,38 +283,14 @@ class ProfileFragment : Fragment() {
                         "账号ID：${user.id}"
             )
             .setPositiveButton("确定", null)
-            .setNegativeButton("修改昵称") { _, _ ->
-                showEditNicknameDialog(user)
-            }
-            .show()
-    }
-
-    /**
-     * 修改昵称对话框
-     */
-    private fun showEditNicknameDialog(user: com.example.blindweekend.data.model.User) {
-        val input = android.widget.EditText(requireContext()).apply {
-            setText(user.nickname)
-            hint = "输入新昵称"
-            maxLines = 1
-            setSelection(text.length)
-        }
-
-        AlertDialog.Builder(requireContext())
-            .setTitle("修改昵称")
-            .setView(input)
-            .setPositiveButton("保存") { _, _ ->
-                val newName = input.text.toString().trim()
-                if (newName.length in 2..12) {
-                    val updated = user.copy(nickname = newName)
-                    AuthManager.updateUser(updated)
+            .setNeutralButton("去修改") { _, _ ->
+                val sheet = SettingsBottomSheet()
+                sheet.onSettingsUpdated = {
                     refreshUserUI()
-                    Toast.makeText(requireContext(), "昵称已更新", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(requireContext(), "昵称需要2-12个字符", Toast.LENGTH_SHORT).show()
+                    loadStats()
                 }
+                sheet.show(childFragmentManager, "settings")
             }
-            .setNegativeButton("取消", null)
             .show()
     }
 
@@ -309,7 +334,7 @@ class ProfileFragment : Fragment() {
 
         // 城市选项
         val cities = arrayOf("北京", "上海", "广州", "深圳", "杭州", "成都", "武汉", "南京",
-                             "西安", "重庆", "天津", "苏州")
+                             "西安", "重庆", "天津", "苏州", "惠州")
         var selectedCity = initialCity
 
         // 消费水平选项
@@ -502,6 +527,7 @@ class ProfileFragment : Fragment() {
 
     /**
      * 保存偏好到 Room 数据库
+     * 如果城市发生变化且用户已登录，同步更新到后端 User.city
      */
     private fun savePreferences(city: String, consumeLevel: String, tags: List<String>) {
         lifecycleScope.launch {
@@ -519,6 +545,27 @@ class ProfileFragment : Fragment() {
                     updatedAt = System.currentTimeMillis()
                 )
                 prefDao.insertOrUpdate(entity)
+
+                // 如果用户已登录且城市发生变化，同步到后端
+                if (AuthManager.isLoggedIn) {
+                    val currentCity = AuthManager.currentUser?.city
+                    if (currentCity != city) {
+                        try {
+                            val api = com.example.blindweekend.network.RetrofitClient.api
+                            val response = api.updateProfile(mapOf("city" to city))
+                            if (response.isSuccessful && response.body()?.code == 200) {
+                                val updatedUser = response.body()?.data
+                                if (updatedUser != null) {
+                                    AuthManager.updateUser(updatedUser)
+                                }
+                                android.util.Log.d("ProfileFragment", "城市已同步到后端: $city")
+                            }
+                        } catch (e: Exception) {
+                            android.util.Log.w("ProfileFragment", "城市同步到后端失败", e)
+                        }
+                    }
+                }
+
                 Toast.makeText(requireContext(), "偏好设置已保存！", Toast.LENGTH_SHORT).show()
             } catch (_: Exception) {}
         }

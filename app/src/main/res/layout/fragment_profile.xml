@@ -26,14 +26,15 @@
             android:paddingEnd="24dp"
             android:paddingBottom="28dp">
 
-            <!-- 头像 -->
+            <!-- 头像（圆形裁剪，无 padding 让图片完整覆盖） -->
             <ImageView
                 android:id="@+id/iv_avatar"
                 android:layout_width="64dp"
                 android:layout_height="64dp"
-                android:src="@drawable/ic_launcher_foreground"
-                android:background="@drawable/circle_primary"
-                android:padding="4dp"
+                android:src="@drawable/ic_person"
+                android:scaleType="centerCrop"
+                android:background="@drawable/circle_gray"
+                android:clipToOutline="true"
                 android:contentDescription="头像" />
 
             <LinearLayout
@@ -73,7 +74,7 @@
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
                 android:padding="8dp"
-                android:src="@drawable/ic_launcher_foreground"
+                android:src="@drawable/ic_settings"
                 tools:ignore="TouchTargetSizeCheck" />
 
         </LinearLayout>

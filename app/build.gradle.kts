@@ -29,7 +29,7 @@ android {
     buildTypes {
         debug {
             isMinifyEnabled = false
-            buildConfigField("String", "BASE_URL", "\"http://10.213.212.236:8080/\"") // 局域网真机调试(手机热点)
+            buildConfigField("String", "BASE_URL", "\"https://267a3409.r2.cpolar.top\"") // 局域网真机调试(手机热点)
         }
         release {
             isMinifyEnabled = true

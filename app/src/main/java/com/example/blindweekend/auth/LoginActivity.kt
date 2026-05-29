@@ -139,14 +139,15 @@ class LoginActivity : AppCompatActivity() {
                     mapOf("phone" to phone, "password" to password)
                 )
                 if (response.isSuccessful && response.body()?.code == 200) {
-                    val user = response.body()?.data
-                    if (user != null) {
+                    val loginResponse = response.body()?.data
+                    if (loginResponse != null) {
+                        // 保存真实的 JWT Token 和用户信息
                         AuthManager.saveLoginInfo(
-                            token = "token_${user.id}_${System.currentTimeMillis()}",
-                            user = user
+                            token = loginResponse.token,
+                            user = loginResponse.user
                         )
                         AuthManager.savedPhone = phone
-                        showToast("登录成功！欢迎回来，${user.nickname ?: "探索者"}")
+                        showToast("登录成功！欢迎回来，${loginResponse.user.nickname ?: "探索者"}")
                         setResult(RESULT_OK)
                         finish()
                     } else {
@@ -196,11 +197,12 @@ class LoginActivity : AppCompatActivity() {
                     )
                 )
                 if (response.isSuccessful && response.body()?.code == 200) {
-                    val user = response.body()?.data
-                    if (user != null) {
+                    val loginResponse = response.body()?.data
+                    if (loginResponse != null) {
+                        // 保存真实的 JWT Token 和用户信息
                         AuthManager.saveLoginInfo(
-                            token = "token_${user.id}_${System.currentTimeMillis()}",
-                            user = user
+                            token = loginResponse.token,
+                            user = loginResponse.user
                         )
                         AuthManager.savedPhone = phone
                         showToast("注册成功！欢迎加入不期周末")
