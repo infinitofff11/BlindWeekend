@@ -43,6 +43,31 @@ data class BlindBox(
 }
 
 /**
+ * 方案环节详情（含活动点信息，用于盲盒详情展示）
+ */
+@Parcelize
+data class PlanItemDetail(
+    @SerializedName("item_order") val itemOrder: Int,
+    @SerializedName("start_time") val startTime: String?,
+    @SerializedName("end_time") val endTime: String?,
+    @SerializedName("spot_name") val spotName: String,
+    @SerializedName("spot_address") val spotAddress: String?,
+    @SerializedName("spot_cover_image") val spotCoverImage: String?,
+    @SerializedName("recommend_duration") val recommendDuration: Int?,
+    val note: String?
+) : Parcelable
+
+/**
+ * 盲盒详情响应（后端 BlindBoxDetailDTO）
+ */
+data class BlindBoxDetailResponse(
+    val blindBox: BlindBox,
+    @SerializedName("plan_items") val planItems: List<PlanItemDetail>?,
+    val publisher: Boolean,
+    val participated: Boolean
+)
+
+/**
  * 用户生成的方案
  */
 data class UserPlan(

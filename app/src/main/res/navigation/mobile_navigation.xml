@@ -36,4 +36,28 @@
         android:label="盲盒详情"
         tools:layout="@layout/fragment_blind_box_detail" />
 
+    <!-- 我参与的盲盒 -->
+    <fragment
+        android:id="@+id/navigation_my_participated"
+        android:name="com.example.blindweekend.ui.blindbox.MyBlindBoxesFragment"
+        android:label="我参与的盲盒"
+        tools:layout="@layout/fragment_my_blind_boxes">
+        <argument
+            android:name="is_participated"
+            android:defaultValue="true"
+            app:argType="boolean" />
+    </fragment>
+
+    <!-- 我发布的盲盒 -->
+    <fragment
+        android:id="@+id/navigation_my_published"
+        android:name="com.example.blindweekend.ui.blindbox.MyBlindBoxesFragment"
+        android:label="我发布的盲盒"
+        tools:layout="@layout/fragment_my_blind_boxes">
+        <argument
+            android:name="is_participated"
+            android:defaultValue="false"
+            app:argType="boolean" />
+    </fragment>
+
 </navigation>

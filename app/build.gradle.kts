@@ -29,7 +29,7 @@ android {
     buildTypes {
         debug {
             isMinifyEnabled = false
-            buildConfigField("String", "BASE_URL", "\"https://267a3409.r2.cpolar.top\"") // 局域网真机调试(手机热点)
+            buildConfigField("String", "BASE_URL", "\"https://6338a723.r2.cpolar.top\"")
         }
         release {
             isMinifyEnabled = true
@@ -37,7 +37,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            buildConfigField("String", "BASE_URL", "\"https://your-production-domain.com/api/\"")
+            buildConfigField("String", "BASE_URL", "\"https://6338a723.r2.cpolar.top\"")
         }
     }
 
@@ -84,6 +84,8 @@ dependencies {
     // ========== Room 本地数据库 ==========
     implementation("androidx.room:room-runtime:2.7.0-alpha11")
     implementation("androidx.room:room-ktx:2.7.0-alpha11")
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     kapt("androidx.room:room-compiler:2.7.0-alpha11")
 
     // ========== 图片加载 Coil ==========

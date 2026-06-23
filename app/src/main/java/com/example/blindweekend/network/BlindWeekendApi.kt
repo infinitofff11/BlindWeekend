@@ -62,10 +62,10 @@ interface BlindWeekendApi {
     ): Response<ApiResponse<PageResponse<BlindBox>>>
 
     /**
-     * 盲盒详情
+     * 盲盒详情（含活动地点信息）
      */
     @GET("admin/blindboxes/{id}")
-    suspend fun getBlindBoxDetail(@Path("id") id: Long): Response<ApiResponse<BlindBox>>
+    suspend fun getBlindBoxDetail(@Path("id") id: Long): Response<ApiResponse<BlindBoxDetailResponse>>
 
     /**
      * 发布盲盒

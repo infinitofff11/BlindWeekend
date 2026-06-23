@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import coil.ImageLoader
 import coil.request.ImageRequest
 import com.example.blindweekend.R
@@ -117,7 +118,8 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(requireContext(), "请先登录", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            showBlindBoxListDialog("🎯 我参与的盲盒", true)
+            val bundle = Bundle().apply { putBoolean("is_participated", true) }
+            findNavController().navigate(R.id.navigation_my_participated, bundle)
         }
 
         // 我发布的盲盒
@@ -126,7 +128,8 @@ class ProfileFragment : Fragment() {
                 Toast.makeText(requireContext(), "请先登录", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-            showBlindBoxListDialog("✨ 我发布的盲盒", false)
+            val bundle = Bundle().apply { putBoolean("is_participated", false) }
+            findNavController().navigate(R.id.navigation_my_published, bundle)
         }
 
         refreshUserUI()
@@ -613,148 +616,6 @@ class ProfileFragment : Fragment() {
             .setMessage(msg)
             .setPositiveButton("知道了", null)
             .show()
-    }
-
-    /**
-     * 显示盲盒列表对话框（我参与的 / 我发布的）
-     * 深色背景 + 白色字体
-     * @param title 对话框标题
-     * @param isParticipated true=参与的盲盒, false=发布的盲盒
-     */
-    private fun showBlindBoxListDialog(title: String, isParticipated: Boolean) {
-        val userId = AuthManager.currentUserId
-        val context = requireContext()
-
-        // 用户ID有效性校验
-        if (userId <= 0L) {
-            Toast.makeText(context, "用户信息异常，请重新登录", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        android.util.Log.d("ProfileFragment", "加载盲盒列表: isParticipated=$isParticipated, userId=$userId")
-
-        // 先显示一个加载中的对话框
-        val loadingDialog = AlertDialog.Builder(context)
-            .setTitle(title)
-            .setMessage("正在加载...")
-            .setCancelable(false)
-            .show()
-
-        lifecycleScope.launch {
-            try {
-                val api = com.example.blindweekend.network.RetrofitClient.api
-                val boxes: List<com.example.blindweekend.data.model.BlindBox> = if (isParticipated) {
-                    val response = api.getParticipatedBlindBoxes(userId)
-                    android.util.Log.d("ProfileFragment", "参与的盲盒响应: http=${response.isSuccessful}, code=${response.body()?.code}")
-                    if (response.isSuccessful && response.body()?.code == 200) {
-                        response.body()?.data ?: emptyList()
-                    } else {
-                        android.util.Log.w("ProfileFragment", "参与的盲盒请求失败: httpCode=${response.code()}, body=${response.body()}")
-                        null  // 用null标记请求失败，区分"真的没数据"
-                    }
-                } else {
-                    val response = api.getPublishedBlindBoxes(userId)
-                    android.util.Log.d("ProfileFragment", "发布的盲盒响应: http=${response.isSuccessful}, code=${response.body()?.code}")
-                    if (response.isSuccessful && response.body()?.code == 200) {
-                        response.body()?.data ?: emptyList()
-                    } else {
-                        android.util.Log.w("ProfileFragment", "发布的盲盒请求失败: httpCode=${response.code()}, body=${response.body()}")
-                        null
-                    }
-                } ?: emptyList()  // null（请求失败）时返回空列表
-
-                loadingDialog.dismiss()
-
-                android.util.Log.d("ProfileFragment", "盲盒列表加载完成: size=${boxes.size}")
-
-                requireActivity().runOnUiThread {
-                    // 深色背景容器
-                    val container = android.widget.LinearLayout(context).apply {
-                        orientation = android.widget.LinearLayout.VERTICAL
-                        setPadding(32, 20, 32, 20)
-                        setBackgroundColor(context.getColor(R.color.nav_bg))
-                    }
-
-                    if (boxes.isEmpty()) {
-                        val tvEmpty = TextView(context).apply {
-                            text = if (isParticipated) "还没有参与过任何盲盒\n\n去广场看看吧~" else "还没有发布过盲盒\n\n生成方案后试试发布吧~"
-                            textSize = 15f
-                            setTextColor(0xFFFFFFFF.toInt())
-                            gravity = android.view.Gravity.CENTER
-                            setPadding(0, 40, 0, 40)
-                        }
-                        container.addView(tvEmpty)
-
-                        AlertDialog.Builder(context)
-                            .setTitle(title)
-                            .setView(container)
-                            .setPositiveButton("去广场", { _, _ ->
-                                try {
-                                    val bottomNav = requireActivity().findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.nav_view)
-                                    bottomNav?.selectedItemId = R.id.navigation_blindbox
-                                } catch (_: Exception) {}
-                            })
-                            .setNegativeButton("取消", null)
-                            .show()
-                    } else {
-                        // 构建盲盒列表文本（深色背景+白色字体）
-                        val sb = StringBuilder()
-                        for ((index, box) in boxes.withIndex()) {
-                            val statusLabel = when (box.status) {
-                                "open" -> "🟢 招募中"
-                                "full" -> "🔴 已满员"
-                                "closed" -> "⚫ 已结束"
-                                else -> box.status
-                            }
-                            val dateStr = box.activityDate ?: "日期待定"
-                            sb.append("${index + 1}. ${box.title}\n")
-                            sb.append("   📅 $dateStr  |  👥 ${box.currentCount}/${box.requiredCount}人\n")
-                            sb.append("   状态: $statusLabel")
-                            if (box.district != null) {
-                                sb.append("  |  📍 ${box.district}")
-                            }
-                            sb.append("\n")
-                            if (index < boxes.size - 1) {
-                                sb.append("   ──────────────────────\n")
-                            }
-                        }
-
-                        // 白色字体 TextView 放在深色 ScrollView 中
-                        val tvContent = TextView(context).apply {
-                            text = sb.toString().trim()
-                            textSize = 14f
-                            setTextColor(0xFFFFFFFF.toInt())
-                            typeface = android.graphics.Typeface.MONOSPACE
-                            setLineSpacing(1.2f, 1f)
-                        }
-                        val scrollView = android.widget.ScrollView(context).apply {
-                            setBackgroundColor(context.getColor(R.color.nav_bg))
-                            addView(tvContent)
-                        }
-
-                        container.addView(scrollView)
-
-                        AlertDialog.Builder(context)
-                            .setTitle("$title (${boxes.size})")
-                            .setView(container)
-                            .setPositiveButton("知道了", null)
-                            .setNeutralButton("去广场") { _, _ ->
-                                try {
-                                    val bottomNav = requireActivity().findViewById<com.google.android.material.bottomnavigation.BottomNavigationView>(R.id.nav_view)
-                                    bottomNav?.selectedItemId = R.id.navigation_blindbox
-                                } catch (_: Exception) {}
-                            }
-                            .show()
-                    }
-                }
-            } catch (e: Exception) {
-                android.util.Log.e("ProfileFragment", "盲盒列表加载异常", e)
-                loadingDialog.dismiss()
-                requireActivity().runOnUiThread {
-                    Toast.makeText(context, "加载失败：${e.message}", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
     }
 
     /**
